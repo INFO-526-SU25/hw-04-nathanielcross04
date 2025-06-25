@@ -1,40 +1,165 @@
 ---
 title: "HW 04"
-author: "INSERT YOUR NAME HERE"
+subtitle: "INFO 526 -- Summer 2025"
+author: "Nathaniel Cross"
 format:
   html:
     embed-resources: true
 toc: true
 ---
 
-```{r load-packages, message = FALSE}
-library(tidyverse)
-# add any other packages you use here
-```
+```{r}
+#| label: R setup
+#| execute: 
+#| output: false
 
+# Install and load packages
+if(!require(pacman))
+  install.packages("pacman")
+
+pacman::p_load(tidyverse, 
+               scales,
+               patchwork,
+               openintro)
+
+devtools::install_github("tidyverse/dsbox")
+
+# Set width of code output
+options(width = 65)
+
+# Set figure parameters for knitr
+knitr::opts_chunk$set(
+  fig.align = "center", # center align figures
+  dpi = 300             # higher dpi, sharper image
+)
+```
 
 ## 1 - A second chance
 
+This plot is from Homework 1, Question 3, Part 3. The original task was to write code to generate the eight listed plots from the native `county` dataset. As of the time of writing this, this question was the one on which I had lost the most points, with feedback to patchwork the plots together. Patchworking is a skill I have still not practiced, so wanted to take this chance to do so. I also wanted to make a few changes to legend ordering and theming that I did not know how to do when I completed this assignment.
+
 ```{r}
-#| label: label-me-1
+#| label: Question 1 code
+#| fig-width: 7
+#| fig-height: 8.652
+#| warning: false
+#| message: false
+
+ggplot2::theme_set(ggplot2::theme_minimal(base_size = 8))
+
+# plot a
+a <- county |>
+  ggplot(aes(x = homeownership, y = poverty)) +
+  geom_point() +
+  labs(
+    title = "Plot A"
+  ) +
+  theme(
+      plot.margin = margin(t = 1, r = 3, b = 1, l = 1, unit = "lines"))
+  
+# plot b
+b <- county |>
+  ggplot(aes(x = homeownership, y = poverty)) +
+  geom_point() +
+  geom_smooth(method = "loess", se = FALSE) +
+  labs(
+    title = "Plot B"
+  )
+
+# plot c
+c <- county |>
+  ggplot(aes(x = homeownership, y = poverty, color = metro)) +
+  geom_point(color = "black") +
+  geom_smooth(method = "loess", se = FALSE, na.rm = FALSE, show.legend = FALSE) +
+  labs(
+    title = "Plot C"
+  ) +
+  scale_color_manual(values = c("yes" = "green", "no" = "green")) +
+  guides(fill = "none") +
+  theme(
+      plot.margin = margin(t = 1, r = 3, b = 1, l = 1, unit = "lines"))
+  
+
+# plot d
+d <- county |>
+  ggplot(aes(x = homeownership, y = poverty, color = metro)) +
+  geom_smooth(method = "loess", se = FALSE, na.rm = FALSE, show.legend = FALSE) +
+  geom_point(color = "black") +
+  labs(
+    title = "Plot D"
+  ) +
+  scale_color_manual(values = c("yes" = "blue", "no" = "blue")) +
+  guides(fill = "none")
+
+# plot e
+e <- county |>
+  ggplot(aes(x = homeownership, y = poverty)) +
+  geom_point(aes(color = metro)) +
+  geom_smooth(method = "loess", se = FALSE, na.rm = FALSE, aes(linetype = metro)) +
+  labs(
+    title = "Plot E" 
+  ) +
+  guides(color = guide_legend(order = 2), 
+         linetype = guide_legend(order = 1)) # Source: https://stackoverflow.com/questions/11393123/controlling-ggplot2-legend-display-order/11397958#11397958
+
+# plot f
+f <- county |>
+  ggplot(aes(x = homeownership, y = poverty, color = metro)) +
+  geom_point(aes(color = metro)) +
+  geom_smooth(method = "loess", se = FALSE, na.rm = FALSE) +
+  labs(
+    title = "Plot F"
+  ) 
+
+# plot g
+g <- county |>
+  ggplot(aes(x = homeownership, y = poverty)) +
+  geom_point(aes(color = metro)) +
+  geom_smooth(method = "loess", se = FALSE) +
+  labs(
+    title = "Plot G"
+  )
+
+# plot h
+h <- county |>
+  ggplot(aes(x = homeownership, y = poverty)) +
+  geom_point(aes(color = metro)) +
+  labs(
+    title = "Plot H"
+  )
+
+(a + b) / (c + d) / (e + f) / (g + h) 
+```
+
+```{r}
+#| label: Reset knitr defaults
+#| execute: 
+#| output: false
+
+# Set figure parameters for knitr
+knitr::opts_chunk$set(
+  fig.width = 7,        # 7" width
+  fig.asp = 0.618,      # the golden ratio
+  fig.retina = 3,       # dpi multiplier for displaying HTML output on retina
+  fig.align = "center", # center align figures
+  dpi = 300             # higher dpi, sharper image
+)
+```
+
+## 2. Arizona state of counties
+
+```{r}
+#| label: Question 2 code
 
 ```
 
-
-## 2.  Arizona state of counties
-
-```{r}
-#| label: label-me-2
-
-```
-
-## 3.  Arizona state of population change
+## 3. Arizona state of population change
 
 ```{r}
 #| label: label-me-3
 
 ```
 
-## 4.  Arizona state of Indiginous Tribal Regions
+## 4. Arizona state of Indiginous Tribal Regions
 
 ## 5. Arizona state of patchwork
